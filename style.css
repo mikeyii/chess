@@ -1,0 +1,85 @@
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Helvetica, sans-serif;
+    font-size: 15px;
+    color: #444;
+}
+
+#board {
+    width: 80vh;
+    height: 80vh;
+    margin: 30px auto;
+    background-color: #eee;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    border: 2px solid #444;
+}
+
+.btn {
+    display: block;
+    width: 160px;
+    height: 40px;
+    font-family: Helvetica, sans-serif;
+    background-color: transparent;
+    border: 2px solid #444;
+    font-size: 16px;
+    text-transform: uppercase;
+    border-radius: 4px;
+    outline: none;
+    margin: 20px auto;
+    color: #333;
+    cursor: pointer;
+    transitoin: all 270ms ease-in-out;
+    letter-spacing: 1px;
+}
+
+.btn:hover,
+.btn:focus {
+    background-color: #444;
+    color: #fff;
+}
+
+.btn:active:hover,
+.btn:active:hover {
+    color: #fff;
+    background-color: #333;
+}
+
+.cell {
+    background-color: #fff;
+    border: 2px solid #555;
+    background-size: cover;
+    background-position: center center;
+}
+
+.cell:nth-child(16n-1),
+.cell:nth-child(16n-3),
+.cell:nth-child(16n-5),
+.cell:nth-child(16n-7),
+.cell:nth-child(16n-8),
+.cell:nth-child(16n-10),
+.cell:nth-child(16n-12),
+.cell:nth-child(16n-14) {
+    background-color: #aaa;
+}
+
+.cell.marked {
+    background-color: #5a8;
+}
+
+.cell.selected {
+    background-color: #c92;
+}
+
+.cell.danger {
+    background-color: #c88;
+}
+
+[hidden] {
+    display: none;
+}
