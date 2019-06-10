@@ -1,13 +1,31 @@
 const board = document.getElementById('board');
 const autoplay = document.getElementById('autoplay');
 const reset = document.getElementById('reset');
+const eatenWhite = document.getElementById('eaten-white');
+const eatenBlack = document.getElementById('eaten-black');
+const instructions = document.getElementById('instructions');
+
+const addEaten = function(figure) {
+  const el = document.createElement('div');
+  el.className = 'eaten';
+  el.style.backgroundImage = 'url("img/' + figure.team + '-' + figure.name + '.svg")';
+  this.appendChild(el);
+}
+
+eatenWhite.addEaten = addEaten;
+eatenBlack.addEaten = addEaten;
 
 let cells = [];
-let record = [];
+let record = {
+  white: [],
+  black: [],
+};
+
+let score = 0;
 
 let currentMove = 'white';
 let selectedFigure;
-let eaten = {
+let eatenFigures = {
   white: [],
   black: [],
 }
@@ -109,7 +127,14 @@ const moveFigure = (figure, cell, silence = false) => {
 
 const eatFigure = (figure, cell, silence = false) => {
   figures[cell.figure.team].splice(figures[cell.figure.team].findIndex(figure => figure === cell.figure), 1);
-  eaten[figure.team].push(cell.figure);
+  if (!silence) {
+    eatenFigures[figure.team].push(cell.figure);
+    if (figure.team === 'white') {
+      eatenWhite.addEaten(cell.figure);
+    } else if (figure.team === 'black') {
+      eatenBlack.addEaten(cell.figure);
+    }
+  }
   moveFigure(figure, cell, silence);
 }
 
@@ -381,12 +406,12 @@ const getMoves = (figure, check, eats) => {
 
 const willBeCheck = (figure, move) => {
   const fromCell = getCell(figure);
-  let eaten;
+  let eatenFigure;
   if (move.hasFigure) {
-    eaten = move.figure;
+    eatenFigure = move.figure;
   }
   fromCell.removeFigure(true);
-  if (eaten) {
+  if (eatenFigure) {
     eatFigure(figure, move, true);
   } else {
     moveFigure(figure, move, true);
@@ -397,8 +422,8 @@ const willBeCheck = (figure, move) => {
 
   moveFigure(figure, fromCell, true);
 
-  if (eaten) {
-    move.addFigure(eaten, true);
+  if (eatenFigure) {
+    move.addFigure(eatenFigure, true);
   } else {
     move.removeFigure(true);
   }
@@ -478,16 +503,17 @@ const onclick = function(ev) {
     this.classList.add('selected');
   } else {
     if (selectedFigure && availableMoves.includes(this)) {
+      console.log(
+         selectedFigure.name,
+        `${getColName(selectedFigure.col)}${selectedFigure.row}:${getColName(this.col)}${this.row}`
+      );
+      record[currentMove].push(`${selectedFigure.name}:${getColName(selectedFigure.col)}${selectedFigure.row}:${getColName(this.col)}${this.row}`);
+
       if (this.hasFigure) {
         eatFigure(selectedFigure, this);
       } else {
         moveFigure(selectedFigure, this);
       }
-      console.log(
-         selectedFigure.name,
-        `${getColName(selectedFigure.col)}${selectedFigure.row}:${getColName(this.col)}${this.row}`
-      );
-      record.push(`${selectedFigure.name}:${getColName(selectedFigure.col)}${selectedFigure.row}:${getColName(this.col)}${this.row}`);
       currentMove = currentMove === 'white' ? 'black' : 'white';
       clearBoard();
       availableMoves = [];
@@ -546,12 +572,33 @@ const getColName = num => {
   if (num === 8) return 'H';
 }
 
+const getColNum = letter => {
+  if (letter === 'A') return 1;
+  if (letter === 'B') return 2;
+  if (letter === 'C') return 3;
+  if (letter === 'D') return 4;
+  if (letter === 'E') return 5;
+  if (letter === 'F') return 6;
+  if (letter === 'G') return 7;
+  if (letter === 'H') return 8;
+}
+
+const getCellByName = cell => {
+  if (cell.length > 2) return null;
+  const row = +cell[1];
+  if (row < 0 || row > 8) return null;
+  const col = getColNum(cell[0]);
+  if (row && col) {
+    return getCell({row, col});
+  }
+}
+
 reset.onclick = function() {
   cells = [];
   record = [];
   currentMove = 'white';
   selectedFigure = null;
-  eaten = {
+  eatenFigures = {
     white: [],
     black: [],
   }
@@ -567,6 +614,8 @@ reset.onclick = function() {
   }
   availableMoves = [];
   board.innerHTML = '';
+  eatenWhite.innerHTML = '';
+  eatenBlack.innerHTML = '';
   init();
   reset.hidden = true;
   autoplay.hidden = false;

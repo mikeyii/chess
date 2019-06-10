@@ -10,14 +10,50 @@ body {
     color: #444;
 }
 
-#board {
+.board-wrap {
     width: 80vh;
     height: 80vh;
-    margin: 30px auto;
+    margin: 20px auto;
+}
+
+#board {
     background-color: #eee;
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     border: 2px solid #444;
+    height: 100%;
+}
+
+#instructions {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 160px;
+    text-align: center;
+    text-transform: uppercase;
+    line-height: 40px;
+    background-color: rgba(0,0,0,.4);
+    color: #fff;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    overflow: hidden;
+    transition: background-color 270ms ease-in-out;
+}
+
+#instructions:empty {
+    display: none;
+}
+
+#instructions.error {
+    background-color: #c88;
+}
+
+#instructions.danger {
+    background-color: #c92;
+}
+
+#instructions.success {
+    background-color: #5a8;
 }
 
 .btn {
@@ -53,6 +89,19 @@ body {
 .cell {
     background-color: #fff;
     border: 2px solid #555;
+    background-size: cover;
+    background-position: center center;
+}
+
+#eaten-white,
+#eaten-black {
+    height: 32px;
+}
+
+.eaten {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
     background-size: cover;
     background-position: center center;
 }

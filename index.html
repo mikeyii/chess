@@ -8,7 +8,13 @@
 <body>
     <button id="autoplay" class="btn">Autoplay</button>
     <button id="reset" class="btn" hidden>Reset</button>
-    <div id="board"></div>
+    <div class="board-wrap">
+        <div id="eaten-black"></div>
+        <div id="board"></div>
+        <div id="eaten-white"></div>
+    </div>
+    <div id="instructions">Press R for voice command</div>
     <script src="script.js"></script>
+    <script src="voice.js"></script>
 </body>
 </html>
